@@ -1,0 +1,19 @@
+@layer theme, base, mui, components, utilities;
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #4F46E5;
+
+  --color-background: #F8FAFC;
+  --color-surface: #FFFFFF;
+
+  --color-text: #0F172A;
+  --color-text-secondary: #64748B;
+
+  --color-border: #E2E8F0;
+
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+}
