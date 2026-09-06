@@ -1,4 +1,4 @@
-import { Button, Container, Stack } from '@mui/material'
+import { Container, Stack } from '@mui/material'
 import { Card } from '../components/card/Card'
 import Form from '../components/form/Form'
 import FormTextInput from '../components/form_input/Text'
@@ -7,7 +7,13 @@ import type z from 'zod'
 import { useLoginStore } from './store'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { setCookiesValue } from '../utility/local_storage'
+import {
+  cookieKeys,
+  getCookiesValue,
+  removeCookies,
+  setCookiesValue,
+} from '../utility/local_storage'
+import { Button } from '../components/button/Button'
 
 const Login = () => {
   const { data, login, isActionLoading, isActionSuccess } = useLoginStore()
@@ -15,6 +21,16 @@ const Login = () => {
     login(values)
   }
   const navigate = useNavigate()
+  const token = getCookiesValue('token')
+
+  useEffect(() => {
+    if (token) {
+      navigate('/dashboard')
+      return
+    } else {
+      cookieKeys.map((key) => removeCookies(key))
+    }
+  }, [])
 
   useEffect(() => {
     if (!isActionLoading && isActionSuccess && data) {
@@ -29,7 +45,7 @@ const Login = () => {
         <Form schema={LoginFormSchema} onSubmit={handleSubmit}>
           <Stack spacing={2}>
             <FormTextInput label='Username' name='username' />
-            <FormTextInput label='Password' name='password' />
+            <FormTextInput label='Password' name='password' type='password' />
             <Button type='submit' variant='contained'>
               Submit
             </Button>

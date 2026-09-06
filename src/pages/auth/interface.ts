@@ -1,15 +1,19 @@
 import type { DefaultStoreInterface } from '../utility/global_interface'
 
-type CompanyStore = {
+export type Company = {
   id: number
   name: string
 }
 
+export type Store = Company & {
+  company_id: number
+}
+
 export type GetMeData = {
-  companies: CompanyStore[]
+  companies: Company[]
   id: number
   name: string
-  stores: CompanyStore[]
+  stores: Store[]
 }
 
 export type AuthStore = DefaultStoreInterface & {

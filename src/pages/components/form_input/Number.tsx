@@ -2,16 +2,7 @@ import { Controller, useFormContext } from 'react-hook-form'
 import type { BaseFormInput } from '../../utility/global_interface'
 import { Input } from '../input/Input'
 
-type FormTextInputProps = BaseFormInput & {
-  type?: string
-}
-
-const FormTextInput = ({
-  disabled,
-  label,
-  name,
-  type = '',
-}: FormTextInputProps) => {
+const FormNumberInput = ({ disabled, label, name }: BaseFormInput) => {
   const { control } = useFormContext()
 
   return (
@@ -25,10 +16,15 @@ const FormTextInput = ({
           error={!!fieldState.error}
           helperText={fieldState.error?.message}
           label={label}
+          onChange={(e) => {
+            field.onChange(
+              Number(e.target.value) ? Number(e.target.value) : undefined,
+            )
+          }}
           slotProps={{
             inputLabel: { shrink: true },
           }}
-          type={type}
+          type='number'
         />
       )}
       rules={{ required: true }}
@@ -36,4 +32,4 @@ const FormTextInput = ({
   )
 }
 
-export default FormTextInput
+export default FormNumberInput

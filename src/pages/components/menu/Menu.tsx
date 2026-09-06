@@ -1,7 +1,7 @@
 import * as React from 'react'
-import Button from '@mui/material/Button'
 import MuiMenu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import { Button } from '../button/Button'
 
 type MenuProps = {
   label: React.ReactNode

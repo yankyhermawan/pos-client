@@ -1,19 +1,27 @@
 @layer theme, base, mui, components, utilities;
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  --color-primary: #4F46E5;
+  --color-primary: #4f46e5;
 
-  --color-background: #F8FAFC;
-  --color-surface: #FFFFFF;
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
 
-  --color-text: #0F172A;
-  --color-text-secondary: #64748B;
+  --color-text: #0f172a;
+  --color-text-secondary: #64748b;
 
-  --color-border: #E2E8F0;
+  --color-border: #e2e8f0;
 
-  --color-success: #10B981;
-  --color-warning: #F59E0B;
-  --color-error: #EF4444;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+}
+
+.swiper {
+  --swiper-navigation-size: 32px;
+
+  @media screen and (max-width: 768px) {
+    --swiper-navigation-size: 24px;
+  }
 }

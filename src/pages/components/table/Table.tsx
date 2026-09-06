@@ -8,7 +8,7 @@ import Paper from '@mui/material/Paper'
 import { Container } from '@mui/material'
 
 type Rows = {
-  [x: string]: string | number
+  [x: string]: string | number | object
 }
 
 type PaginationModel = {

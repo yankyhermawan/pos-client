@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useProductStore } from './store'
 import Table from '../components/table/Table'
 import { columns, rowActions } from './config'
-import { useEffectSkipFirst } from '../utility/custom_hooks'
+import { useEffectSkipFirst, useRefresh } from '../utility/custom_hooks'
 import type { Product } from './interface'
 import { type GridRenderCellParams } from '@mui/x-data-grid'
 import TableRowActions from '../components/table/TableRowActions'
@@ -18,11 +18,10 @@ const Product = () => {
     const limit = page.pageSize
     const offset = page.page * page.pageSize
 
-    getProducts({
+    getProducts(false)({
       limit,
       offset,
       sort: [{ by: 'id', order: 'DESC' }],
-      store_id: 1,
     })
   }
 
@@ -47,6 +46,8 @@ const Product = () => {
   useEffectSkipFirst(() => {
     handleGetData()
   }, [page])
+
+  useRefresh({ handler: handleGetData })
 
   return (
     <Table

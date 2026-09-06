@@ -1,4 +1,9 @@
 import { useEffect, useRef, useState, type DependencyList } from 'react'
+import { getCookiesValue } from './local_storage'
+
+type UseRefresh = {
+  handler: () => void
+}
 
 export const useEffectSkipFirst = (
   callback: () => void,
@@ -28,4 +33,25 @@ export function useWindowWidth() {
   }, [])
 
   return windowWidth
+}
+
+export const useRefresh = ({ handler }: UseRefresh) => {
+  const [companyId, setCompanyId] = useState<number | null>(null)
+  const [storeId, setStoreId] = useState<number | null>(null)
+
+  useEffect(() => {
+    const handleCookieChange = () => {
+      const compId = Number(getCookiesValue('company_id')) || null
+      const stId = Number(getCookiesValue('store_id')) || null
+      setCompanyId(compId)
+      setStoreId(stId)
+    }
+    cookieStore.addEventListener('change', handleCookieChange)
+
+    return () => cookieStore.removeEventListener('change', handleCookieChange)
+  }, [])
+
+  useEffectSkipFirst(() => {
+    handler()
+  }, [companyId, storeId])
 }

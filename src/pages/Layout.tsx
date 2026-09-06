@@ -14,10 +14,14 @@ export const Layout = () => {
     search,
   }
   return (
-    <Box className='flex justify-center'>
-      <Box className='max-w-3xl'>
-        <Outlet context={context} />
-      </Box>
+    <Box
+      className='flex justify-center'
+      sx={{
+        backgroundColor: 'rgb(1, 1, 1, 0.1)',
+        position: 'relative',
+      }}
+    >
+      <Outlet context={context} />
     </Box>
   )
 }
