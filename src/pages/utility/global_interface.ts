@@ -25,3 +25,17 @@ export type PaginationResponse<T extends object> = {
 }
 
 export type TableRowActionType = 'edit' | 'delete' | 'view'
+
+export type Options = {
+  disabled: boolean
+  label: string
+  value: string | number
+}
+
+export type BaseFormInput = {
+  disabled?: boolean
+  label: string
+  name: string
+}
+
+export type MimeType = '.jpeg' | '.jpg' | '.png' | '.webp'

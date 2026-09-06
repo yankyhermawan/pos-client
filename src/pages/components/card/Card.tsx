@@ -1,18 +1,26 @@
-import { CardContent, CardHeader, Card as MuiCard } from '@mui/material'
+import {
+  CardContent,
+  CardHeader,
+  Card as MuiCard,
+  type CardProps,
+} from '@mui/material'
 import type { JSX } from 'react/jsx-runtime'
 
-type CardProps = {
+type ModifiedCardProps = CardProps & {
   children: JSX.Element[] | JSX.Element
   title?: string
 }
 
-export const Card = ({ children, title }: CardProps) => {
+export const Card = ({ children, title, ...props }: ModifiedCardProps) => {
+  const sx = {
+    borderRadius: '12px',
+    padding: '1em',
+    ...props.sx,
+  }
   return (
-    <MuiCard raised sx={{ borderRadius: '12px', padding: '1em' }}>
-      <CardHeader title={title} />
-      <CardContent>
-        {children}
-      </CardContent>
+    <MuiCard {...props} raised sx={sx}>
+      {title && <CardHeader title={title} />}
+      <CardContent>{children}</CardContent>
     </MuiCard>
   )
 }

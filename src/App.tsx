@@ -6,6 +6,7 @@ import { adminProgramList } from './pages/common/adminProgram'
 import Add from './pages/common/access/Add'
 import Edit from './pages/common/access/Edit'
 import View from './pages/common/access/View'
+import { useWindowWidth } from './pages/utility/custom_hooks'
 
 const Login = lazy(() => import('./pages/login/Login'))
 const Menu = lazy(() => import('./pages/menu/Menu'))
@@ -15,6 +16,7 @@ const Home = lazy(() => import('./pages/home/Home'))
 const Layout = lazy(() => import('./pages/Layout'))
 
 export default function App() {
+  const windowWidth = useWindowWidth()
   const theme = createTheme({
     palette: {
       primary: {
@@ -32,6 +34,7 @@ export default function App() {
     },
     typography: {
       fontFamily: ['"Fredoka"', 'sans-serif'].join(','),
+      fontSize: windowWidth <= 768 ? 12 : 16,
     },
   })
 
@@ -56,9 +59,9 @@ export default function App() {
           </Route>
           <Route Component={Login} path='/login' />
           <Route Component={AdminLayout}>
-            <Route Component={Add} path='/:name/add' />
-            <Route Component={Edit} path='/:name/edit/:identifier' />
-            <Route Component={View} path='/:name/view/:identifier' />
+            <Route Component={Add} path='/:name/:path' />
+            <Route Component={Edit} path='/:name/:path/:identifier' />
+            <Route Component={View} path='/:name/:path/:identifier' />
             {mapAdminPrograms()}
           </Route>
           <Route Component={NotFoundPage} path='/404' />

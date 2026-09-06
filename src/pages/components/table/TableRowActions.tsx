@@ -4,10 +4,11 @@ import {
   type GridRenderCellParams,
 } from '@mui/x-data-grid'
 import type { TableRowActionType } from '../../utility/global_interface'
-import { Box, Button } from '@mui/material'
+import { Box } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import ViewIcon from '@mui/icons-material/Visibility'
+import { Button } from '../button/Button'
 
 export type RowActions = {
   label: string

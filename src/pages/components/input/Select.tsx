@@ -1,6 +1,7 @@
 import { InputLabel, MenuItem, Select as MuiSelect } from '@mui/material'
 
 type SelectProps = {
+  disabled?: boolean
   label: string
   onChange: (e: string | number | null) => void
   options: {
@@ -11,7 +12,7 @@ type SelectProps = {
 }
 
 const Select = (props: SelectProps) => {
-  const { label, onChange, options, value } = props
+  const { disabled, label, onChange, options, value } = props
 
   const mapOptions = () =>
     options.map((opt) => (
@@ -34,6 +35,7 @@ const Select = (props: SelectProps) => {
         {label}
       </InputLabel>
       <MuiSelect
+        disabled={disabled}
         labelId={`${label}-label`}
         id={`${label}-id`}
         value={value}
@@ -47,6 +49,11 @@ const Select = (props: SelectProps) => {
           },
           '&:hover': {
             backgroundColor: 'background.default',
+          },
+          '&.Mui-disabled .MuiSelect-select': {
+            backgroundColor: 'background.default',
+            cursor: 'not-allowed',
+            pointerEvents: 'unset',
           },
         }}
       >

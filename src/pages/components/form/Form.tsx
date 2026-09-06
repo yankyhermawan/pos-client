@@ -11,7 +11,9 @@ type FormProps<TSchema extends z.ZodObject> = {
   schema: TSchema
 }
 
-const getDefaultValues = <T extends z.ZodObject>(schema: z.ZodObject<z.core.$ZodLooseShape, z.core.$strip>) => {
+const getDefaultValues = <T extends z.ZodObject>(
+  schema: z.ZodObject<z.core.$ZodLooseShape, z.core.$strip>,
+) => {
   const jsonSchema = schema.toJSONSchema().properties
   if (!jsonSchema) return {} as DefaultValues<z.input<T>>
   const result: Record<string, unknown> = {}
@@ -37,18 +39,18 @@ const Form = <T extends z.ZodObject>(props: FormProps<T>) => {
   const formData = useForm<z.input<T>, unknown, z.output<T>>({
     defaultValues: getDefaultValues(schema),
     mode: 'onSubmit',
-    resolver: zodResolver(schema)
+    resolver: zodResolver(schema),
   })
 
   useEffect(() => {
     if (existingValue) {
-      formData.setValues(existingValue)
+      formData.reset(existingValue)
     }
   }, [existingValue, formData])
 
   return (
     <FormProvider {...formData}>
-      <form onSubmit={formData.handleSubmit(onSubmit)}>
+      <form onSubmit={formData.handleSubmit(onSubmit, console.log)}>
         {children}
       </form>
     </FormProvider>

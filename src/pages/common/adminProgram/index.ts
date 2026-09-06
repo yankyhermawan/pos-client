@@ -25,27 +25,15 @@ export const adminProgramList: (GroupProgramListProps | ProgramListProps)[] = [
     path: '/dashboard',
   },
   {
-    addComponent: lazy(() => import('../../product/AddEditView')),
-    editComponent: lazy(() => import('../../product/AddEditView')),
-    viewComponent: lazy(() => import('../../product/AddEditView')),
-    component: lazy(() => import('../../product/Product')),
-    icon: 'inventory',
-    name: 'Product',
-    path: '/product',
-  },
-  {
     children: [
       {
+        addComponent: lazy(() => import('../../product/AddEditView')),
+        editComponent: lazy(() => import('../../product/AddEditView')),
+        viewComponent: lazy(() => import('../../product/AddEditView')),
         component: lazy(() => import('../../product/Product')),
         icon: 'inventory',
         name: 'Product',
-        path: '/productss',
-      },
-      {
-        component: lazy(() => import('../../product/Product')),
-        icon: 'home',
-        name: 'Product-Baru',
-        path: '/new-product',
+        path: '/product',
       },
     ],
     icon: 'table',
