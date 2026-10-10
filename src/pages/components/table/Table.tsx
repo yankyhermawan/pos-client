@@ -6,6 +6,9 @@ import {
 } from '@mui/x-data-grid'
 import Paper from '@mui/material/Paper'
 import { Container } from '@mui/material'
+import { Button } from '../button/Button'
+import AddIcon from '@mui/icons-material/Add'
+import type React from 'react'
 
 type Rows = {
   [x: string]: string | number | object
@@ -14,6 +17,12 @@ type Rows = {
 type PaginationModel = {
   page: number
   pageSize: number
+}
+
+type TableButton = {
+  onClick: () => void
+  text: string
+  type: 'add'
 }
 
 type TableProps = {
@@ -26,6 +35,7 @@ type TableProps = {
   pagination: PaginationModel
   rowCount: number
   rows: Rows[]
+  tableButtons?: TableButton[]
 }
 
 const Table = ({
@@ -35,6 +45,7 @@ const Table = ({
   pagination,
   rowCount,
   rows,
+  tableButtons,
 }: TableProps) => {
   const getColumnWidth = ({
     calculatedWidth,
@@ -101,9 +112,28 @@ const Table = ({
     }))
   }
 
+  const icons: { [K in TableButton['type']]: React.ReactElement } = {
+    add: <AddIcon />,
+  }
+
+  const renderButtons = () => {
+    if (!tableButtons) return null
+    return tableButtons.map((but, key) => (
+      <Button key={key} onClick={but.onClick} variant='contained'>
+        {icons[but.type]}
+        {but.text}
+      </Button>
+    ))
+  }
+
   return (
     <Container>
-      <Paper>
+      {renderButtons()}
+      <Paper
+        sx={{
+          marginTop: '1rem',
+        }}
+      >
         <DataGrid
           columns={renderColumns()}
           disableColumnFilter

@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useProductStore } from './store'
 import Form from '../components/form/Form'
-import { productSchema } from './schema'
-import type z from 'zod'
+import { productFormSchema, type ProductForm } from './interface'
 import FormTextInput from '../components/form_input/Text'
 import { Stack } from '@mui/material'
 import FormNumberInput from '../components/form_input/Number'
@@ -39,7 +38,7 @@ const AddEditView = () => {
     return deletedFiles.every((dt) => !dt.includes(currFileName))
   })
 
-  const handleSubmit = (values: z.infer<typeof productSchema>) => {
+  const handleSubmit = (values: ProductForm) => {
     if (values.id) {
       updateProduct({
         ...values,
@@ -118,7 +117,7 @@ const AddEditView = () => {
   return (
     <Form
       existingValue={product}
-      schema={productSchema}
+      schema={productFormSchema}
       onSubmit={handleSubmit}
     >
       <Stack spacing={2}>

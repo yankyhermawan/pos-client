@@ -1,3 +1,4 @@
+import z from 'zod'
 import type {
   ActionStoreInterface,
   DefaultPaginationQuery,
@@ -9,38 +10,58 @@ export type GetProductParams = DefaultPaginationQuery & {
   id?: number
 }
 
-export type Composition = {
-  bpsp_id: number | null
-  id?: number
-  product_id?: number
-  qty: number
-  raw_material_id: number | null
-}
+export const productCompositionSchema = z.object({
+  bpsp_id: z.number().nullable(),
+  id: z.number(),
+  raw_material_id: z.number().nullable(),
+  qty: z.number().default(0),
+})
 
-type ProductImages = {
-  id?: number
-  image_url: string
-  product_id?: number
-}
+export const productImageSchema = z.object({
+  id: z.number(),
+  image_url: z.string(),
+})
 
-export type Product = {
-  compositions: Composition[]
-  id: number
-  name: string
-  store_id: number
-  stock_qty: number
-  price: number
-  product_images: ProductImages[]
-}
+export const productListingSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  stock_qty: z.number().default(0),
+  price: z.number().default(0),
+  product_images: z.array(productImageSchema),
+})
+
+export const productDetailSchema = z.object({
+  compositions: z.array(productCompositionSchema),
+  id: z.number(),
+  name: z.string(),
+  stock_qty: z.number().default(0),
+  store_id: z.number(),
+  price: z.number().default(0),
+  product_images: z.array(productImageSchema),
+})
+
+export const productFormSchema = z.object({
+  compositions: z.array(productCompositionSchema.partial()),
+  id: z.number().optional(),
+  name: z.string(),
+  stock_qty: z.number().default(0),
+  store_id: z.number(),
+  price: z.number().default(0),
+  product_images: z.array(productImageSchema.partial()),
+})
+
+export type ProductListing = z.infer<typeof productListingSchema>
+export type ProductDetail = z.infer<typeof productDetailSchema>
+export type ProductForm = z.infer<typeof productFormSchema>
 
 export type ProductState = ActionStoreInterface & {
   count: number
-  product: Product | undefined
-  products: Product[]
+  product: ProductDetail | undefined
+  products: ProductListing[]
 
   getProduct: (isPublic: boolean) => (id: number) => void
   getProducts: (isPublic: boolean) => (params: GetProductParams) => void
-  updateProduct: (body: Product) => void
+  updateProduct: (body: ProductForm) => void
 
   reset: () => void
 }

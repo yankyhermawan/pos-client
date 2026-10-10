@@ -1,9 +1,16 @@
 import { Controller, useFormContext } from 'react-hook-form'
 import type { BaseFormInput } from '../../utility/global_interface'
 import { Input } from '../input/Input'
+import { DIGIT_REGEX } from '../../utility/regex'
 
 const FormNumberInput = ({ disabled, label, name }: BaseFormInput) => {
   const { control } = useFormContext()
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const isNumber = DIGIT_REGEX.test(e.target.value)
+    if (isNumber) return Number(e.target.value)
+    return undefined
+  }
 
   return (
     <Controller
@@ -16,11 +23,9 @@ const FormNumberInput = ({ disabled, label, name }: BaseFormInput) => {
           error={!!fieldState.error}
           helperText={fieldState.error?.message}
           label={label}
-          onChange={(e) => {
-            field.onChange(
-              Number(e.target.value) ? Number(e.target.value) : undefined,
-            )
-          }}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            field.onChange(handleChange(e))
+          }
           slotProps={{
             inputLabel: { shrink: true },
           }}

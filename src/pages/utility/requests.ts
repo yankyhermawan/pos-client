@@ -10,6 +10,11 @@ type ResponseType<T> = {
   message?: string
 }
 
+type BaseQsParams = {
+  store_id?: string
+  company_id?: string
+}
+
 class ErrorResponse {
   status: number
   errorMessage: string
@@ -45,7 +50,16 @@ export const post = async <T extends Record<string, unknown>>(
   prefix: string,
   body: Record<string, unknown>,
 ) => {
-  const url = `${ENDPOINT_URL}${prefix}`
+  const qsParam: BaseQsParams = {}
+  const companyId = getCookiesValue('company_id')
+  const storeId = getCookiesValue('store_id')
+  if (companyId) {
+    qsParam.company_id = String(companyId)
+  }
+  if (storeId) {
+    qsParam.store_id = String(storeId)
+  }
+  const url = `${ENDPOINT_URL}${prefix}?${qs.stringify(qsParam)}`
   try {
     const token = getCookiesValue('token')
     const res = await fetch(url, {
@@ -105,7 +119,16 @@ export const put = async <T extends Record<string, unknown>>(
   prefix: string,
   body: Record<string, unknown>,
 ) => {
-  const url = `${ENDPOINT_URL}${prefix}`
+  const qsParam: BaseQsParams = {}
+  const companyId = getCookiesValue('company_id')
+  const storeId = getCookiesValue('store_id')
+  if (companyId) {
+    qsParam.company_id = String(companyId)
+  }
+  if (storeId) {
+    qsParam.store_id = String(storeId)
+  }
+  const url = `${ENDPOINT_URL}${prefix}?${qs.stringify(qsParam)}`
   try {
     const token = getCookiesValue('token')
     const res = await fetch(url, {

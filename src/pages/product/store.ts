@@ -1,7 +1,9 @@
 import { create } from 'zustand'
 import {
+  productDetailSchema,
+  productListingSchema,
   type GetProductParams,
-  type Product,
+  type ProductForm,
   type ProductState,
 } from './interface'
 import * as action from './action'
@@ -22,7 +24,7 @@ export const useProductStore = create<ProductState>((set) => ({
         ? await action.getPublicProduct(id)
         : await action.getProduct(id)
       if (res.status === 200) {
-        set({ product: res.data })
+        set({ product: productDetailSchema.parse(res.data) })
       }
     } catch {
       set({ isError: true })
@@ -37,8 +39,16 @@ export const useProductStore = create<ProductState>((set) => ({
       const res = isPublic
         ? await action.getPublicProducts(params)
         : await action.getProducts(params)
-      if (res.status === 200) {
-        set({ count: res.data?.count || 0, products: res.data?.data || [] })
+      if (res.status === 200 && res.data) {
+        set({
+          count: res.data?.count || 0,
+          products: res.data?.data.map((dt) => productListingSchema.parse(dt)),
+        })
+      } else {
+        set({
+          count: 0,
+          products: [],
+        })
       }
     } catch {
       set({ isError: true })
@@ -47,7 +57,7 @@ export const useProductStore = create<ProductState>((set) => ({
     }
   },
 
-  updateProduct: async (body: Product) => {
+  updateProduct: async (body: ProductForm) => {
     set({ isActionLoading: true, isActionSuccess: false, isError: false })
     try {
       const res = await action.updateProduct(body)

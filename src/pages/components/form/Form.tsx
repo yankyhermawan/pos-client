@@ -50,9 +50,7 @@ const Form = <T extends z.ZodObject>(props: FormProps<T>) => {
 
   return (
     <FormProvider {...formData}>
-      <form onSubmit={formData.handleSubmit(onSubmit, console.log)}>
-        {children}
-      </form>
+      <form onSubmit={formData.handleSubmit(onSubmit)}>{children}</form>
     </FormProvider>
   )
 }

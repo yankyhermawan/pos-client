@@ -120,6 +120,7 @@ const Menu = () => {
           sx={{
             flexWrap: 'wrap',
             justifyContent: 'space-between',
+            width: '100%',
           }}
         >
           {products.map((product) => (

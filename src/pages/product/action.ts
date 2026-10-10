@@ -1,16 +1,21 @@
 import type { PaginationResponse } from '../utility/global_interface'
 import { get, put } from '../utility/requests'
-import { type GetProductParams, type Product } from './interface'
+import {
+  type GetProductParams,
+  type ProductDetail,
+  type ProductForm,
+  type ProductListing,
+} from './interface'
 
 export const getProducts = (params: GetProductParams) =>
-  get<PaginationResponse<Product[]>>('/product', params)
+  get<PaginationResponse<ProductListing[]>>('/product', params)
 
-export const getProduct = (id: number) => get<Product>(`/product/${id}`)
+export const getProduct = (id: number) => get<ProductDetail>(`/product/${id}`)
 
-export const updateProduct = (body: Product) => put('/product', body)
+export const updateProduct = (body: ProductForm) => put('/product', body)
 
 export const getPublicProducts = (params: GetProductParams) =>
-  get<PaginationResponse<Product[]>>('/public/product', params)
+  get<PaginationResponse<ProductListing[]>>('/public/product', params)
 
 export const getPublicProduct = (id: number) =>
-  get<Product>(`/public/product/${id}`)
+  get<ProductDetail>(`/public/product/${id}`)

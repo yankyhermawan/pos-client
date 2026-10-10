@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, Typography } from '@mui/material'
 import { Card } from '../../components/card/Card'
-import type { Product } from '../../product/interface'
+import type { ProductListing } from '../../product/interface'
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported'
 import { getFullUrl } from '../../utility/get_full_url'
 import { formatPrice } from '../../utility/format_price'
@@ -13,7 +13,7 @@ type ProductCartProps = {
   cart: Cart | undefined
   onClickAdd: (product_id: number, isAdd: boolean) => void
   onClickDetail: () => void
-  product: Product
+  product: ProductListing
 }
 
 export const ProductCard = ({
@@ -58,8 +58,8 @@ export const ProductCard = ({
   return (
     <Card
       sx={{
+        maxHeight: 'fit-content',
         padding: 0,
-        height: '100%',
       }}
     >
       <Stack direction='column' sx={{ alignItems: 'center', gap: '8px' }}>

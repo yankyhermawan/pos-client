@@ -3,7 +3,6 @@ import { useProductStore } from './store'
 import Table from '../components/table/Table'
 import { columns, rowActions } from './config'
 import { useEffectSkipFirst, useRefresh } from '../utility/custom_hooks'
-import type { Product } from './interface'
 import { type GridRenderCellParams } from '@mui/x-data-grid'
 import TableRowActions from '../components/table/TableRowActions'
 import { useNavigate } from 'react-router-dom'
@@ -57,6 +56,13 @@ const Product = () => {
       pagination={page}
       rowCount={count}
       rows={products}
+      tableButtons={[
+        {
+          onClick: () => navigate('/product/add'),
+          text: 'Tambah Data',
+          type: 'add',
+        },
+      ]}
     />
   )
 }
