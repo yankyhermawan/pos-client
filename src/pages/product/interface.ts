@@ -41,13 +41,13 @@ export const productDetailSchema = z.object({
 })
 
 export const productFormSchema = z.object({
-  compositions: z.array(productCompositionSchema.partial()),
+  compositions: z.array(productCompositionSchema.partial()).default([]),
   id: z.number().optional(),
   name: z.string(),
   stock_qty: z.number().default(0),
-  store_id: z.number(),
+  store_id: z.number().optional(),
   price: z.number().default(0),
-  product_images: z.array(productImageSchema.partial()),
+  product_images: z.array(productImageSchema.partial()).default([]),
 })
 
 export type ProductListing = z.infer<typeof productListingSchema>
@@ -59,6 +59,7 @@ export type ProductState = ActionStoreInterface & {
   product: ProductDetail | undefined
   products: ProductListing[]
 
+  createProduct: (body: ProductForm) => void
   getProduct: (isPublic: boolean) => (id: number) => void
   getProducts: (isPublic: boolean) => (params: GetProductParams) => void
   updateProduct: (body: ProductForm) => void

@@ -1,7 +1,15 @@
 import type { PaginationResponse } from '../utility/global_interface'
-import { get } from '../utility/requests'
-import type { Bpsp, GetBpspParams } from './interface'
+import { get, post, put } from '../utility/requests'
+import type {
+  BpspCreateForm,
+  BpspDetail,
+  BpspForm,
+  BpspListing,
+  GetBpspParams,
+} from './interface'
 
 export const getBpsps = (params: GetBpspParams) =>
-  get<PaginationResponse<Bpsp[]>>('/bpsp/all', params)
-export const getBpsp = (id: number) => get<Bpsp>(`/bpsp/${id}`)
+  get<PaginationResponse<BpspListing[]>>('/bpsp/all', params)
+export const getBpsp = (id: number) => get<BpspDetail>(`/bpsp/${id}`)
+export const updateBpsp = (body: BpspForm) => put('/bpsp', body)
+export const createBpsp = (body: BpspCreateForm) => post('/bpsp', body)

@@ -8,7 +8,7 @@ import { Stack } from '@mui/material'
 import FormNumberInput from '../components/form_input/Number'
 import { Card } from '../components/card/Card'
 import { CompositionField } from './component/CompositionField'
-import { setCookiesValue } from '../utility/local_storage'
+import { getCookiesValue, setCookiesValue } from '../utility/local_storage'
 import { useBpspParam } from '../bpsp/store'
 import FormUpload from '../components/form_input/Upload'
 import { error } from '../components/notification/Notification'
@@ -20,6 +20,7 @@ const AddEditView = () => {
   const navigate = useNavigate()
   const id = Number(identifier)
   const {
+    createProduct,
     isActionLoading,
     isActionSuccess,
     getProduct,
@@ -49,7 +50,13 @@ const AddEditView = () => {
         id: values.id,
         product_images: fileList.map((dt) => ({ image_url: dt })),
       })
+      return
     }
+    createProduct({
+      ...values,
+      store_id: getCookiesValue('store_id'),
+    })
+    return
   }
 
   useEffect(() => {

@@ -17,6 +17,20 @@ export const useProductStore = create<ProductState>((set) => ({
   product: undefined,
   products: [],
 
+  createProduct: async (body: ProductForm) => {
+    set({ isActionLoading: true, isActionSuccess: false, isError: false })
+    try {
+      const res = await action.createProduct(body)
+      if (res.status === 201) {
+        set({ isActionSuccess: true })
+      }
+    } catch {
+      set({ isError: true })
+    } finally {
+      set({ isActionLoading: false })
+    }
+  },
+
   getProduct: (isPublic: boolean) => async (id: number) => {
     set({ isLoading: true, isError: false })
     try {

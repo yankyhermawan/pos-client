@@ -35,6 +35,12 @@ export const adminProgramList: (GroupProgramListProps | ProgramListProps)[] = [
         name: 'Product',
         path: '/product',
       },
+      {
+        component: lazy(() => import('../../bpsp/Bpsp')),
+        icon: 'inventory',
+        name: 'BPSP',
+        path: '/bpsp',
+      },
     ],
     icon: 'table',
     group: 'Master',
