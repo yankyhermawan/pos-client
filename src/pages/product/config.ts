@@ -2,7 +2,7 @@ import type { GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import type { ReactNode } from 'react'
 import type { RowActions } from '../components/table/TableRowActions'
 import type { TableRowActionType } from '../utility/global_interface'
-import { formatPrice } from '../utility/format_price'
+import { formatPriceRange, getStockLabel, getVariantSummary } from './helpers'
 
 export const rowActions = (
   handleActions: (type: TableRowActionType, id: number) => void,
@@ -39,13 +39,27 @@ export const columns = (
     headerName: 'Nama Produk',
   },
   {
-    field: 'stock_qty',
-    headerName: 'Quantity',
+    field: 'categories',
+    headerName: 'Kategori',
+    renderCell: (params) =>
+      params.row.categories
+        ?.map((dt: { name: string }) => dt.name)
+        .join(', ') || '-',
+  },
+  {
+    field: 'variants',
+    headerName: 'Varian',
+    renderCell: (params) => getVariantSummary(params.row),
+  },
+  {
+    field: 'stock',
+    headerName: 'Stok',
+    renderCell: (params) => getStockLabel(params.row),
   },
   {
     field: 'price',
-    headerName: 'Price',
-    valueFormatter: formatPrice,
+    headerName: 'Harga',
+    renderCell: (params) => formatPriceRange(params.row),
   },
   {
     field: 'action',

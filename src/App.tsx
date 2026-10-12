@@ -34,7 +34,7 @@ export default function App() {
     },
     typography: {
       fontFamily: ['"Fredoka"', 'sans-serif'].join(','),
-      fontSize: windowWidth <= 768 ? 12 : 16,
+      fontSize: windowWidth <= 768 ? 12 : 14,
     },
   })
 

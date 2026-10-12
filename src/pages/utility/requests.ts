@@ -88,7 +88,16 @@ export const post = async <T extends Record<string, unknown>>(
 }
 
 export const postFile = async (prefix: string, file: FormData) => {
-  const url = `${ENDPOINT_URL}${prefix}`
+  const qsParam: BaseQsParams = {}
+  const companyId = getCookiesValue('company_id')
+  const storeId = getCookiesValue('store_id')
+  if (companyId) {
+    qsParam.company_id = String(companyId)
+  }
+  if (storeId) {
+    qsParam.store_id = String(storeId)
+  }
+  const url = `${ENDPOINT_URL}${prefix}?${qs.stringify(qsParam)}`
   try {
     const token = getCookiesValue('token')
     const res = await fetch(url, {
@@ -162,10 +171,10 @@ export const get = async <T extends object>(
 ) => {
   const companyId = getCookiesValue('company_id')
   const storeId = getCookiesValue('store_id')
-  if (companyId) {
+  if (companyId && data['company_id'] === undefined) {
     data['company_id'] = companyId
   }
-  if (storeId) {
+  if (storeId && data['store_id'] === undefined) {
     data['store_id'] = storeId
   }
   const queryString = qs.stringify(data)

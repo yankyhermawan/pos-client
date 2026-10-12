@@ -3,11 +3,13 @@ import type { BaseFormInput } from '../../utility/global_interface'
 import { Input } from '../input/Input'
 
 type FormTextInputProps = BaseFormInput & {
+  fullWidth?: boolean
   type?: string
 }
 
 const FormTextInput = ({
   disabled,
+  fullWidth,
   label,
   name,
   type = '',
@@ -23,6 +25,7 @@ const FormTextInput = ({
           {...field}
           disabled={disabled}
           error={!!fieldState.error}
+          fullWidth={fullWidth}
           helperText={fieldState.error?.message}
           label={label}
           slotProps={{

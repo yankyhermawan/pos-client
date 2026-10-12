@@ -9,7 +9,7 @@ import type {
 } from './interface'
 
 export const getBpsps = (params: GetBpspParams) =>
-  get<PaginationResponse<BpspListing[]>>('/bpsp/all', params)
+  get<PaginationResponse<BpspListing[]>>('/bpsp', params)
 export const getBpsp = (id: number) => get<BpspDetail>(`/bpsp/${id}`)
 export const updateBpsp = (body: BpspForm) => put('/bpsp', body)
 export const createBpsp = (body: BpspCreateForm) => post('/bpsp', body)

@@ -3,32 +3,46 @@ import { Card } from '../../components/card/Card'
 import type { ProductListing } from '../../product/interface'
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported'
 import { getFullUrl } from '../../utility/get_full_url'
-import { formatPrice } from '../../utility/format_price'
+import { formatCents } from '../../utility/format_price'
+import { getStartingPrice, isSimpleProduct } from '../../product/helpers'
 import { Button } from '../../components/button/Button'
 import type { Cart } from '../interface'
 import RemoveCircleOutlineOutlinedIcon from '@mui/icons-material/RemoveCircleOutlineOutlined'
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined'
 
 type ProductCartProps = {
-  cart: Cart | undefined
-  onClickAdd: (product_id: number, isAdd: boolean) => void
+  lines: Cart[]
+  onClickAdd: (product_id: number, value_ids: number[], isAdd: boolean) => void
   onClickDetail: () => void
+  onClickOptions: () => void
   product: ProductListing
 }
 
 export const ProductCard = ({
-  cart,
+  lines,
   onClickAdd,
   onClickDetail,
+  onClickOptions,
   product,
 }: ProductCartProps) => {
   const image = product.product_images[0]?.image_url
+  const isSimple = isSimpleProduct(product)
+  const defaultValue = product.variants[0]?.values[0]
+  const totalQty = lines.reduce((sum, line) => sum + line.qty, 0)
 
   const renderButton = () => {
-    if (!cart || cart.qty <= 0) {
+    if (!isSimple || !defaultValue) {
+      return (
+        <Button onClick={onClickOptions} variant='contained'>
+          {totalQty > 0 ? `Pilih (${totalQty})` : 'Pilih'}
+        </Button>
+      )
+    }
+    const valueIds = [defaultValue.id]
+    if (totalQty <= 0) {
       return (
         <Button
-          onClick={() => onClickAdd(product.id, true)}
+          onClick={() => onClickAdd(product.id, valueIds, true)}
           variant='contained'
         >
           Tambah
@@ -44,11 +58,11 @@ export const ProductCard = ({
           width: '100%',
         }}
       >
-        <IconButton onClick={() => onClickAdd(product.id, false)}>
+        <IconButton onClick={() => onClickAdd(product.id, valueIds, false)}>
           <RemoveCircleOutlineOutlinedIcon />
         </IconButton>
-        <Typography>{cart.qty}</Typography>
-        <IconButton onClick={() => onClickAdd(product.id, true)}>
+        <Typography>{totalQty}</Typography>
+        <IconButton onClick={() => onClickAdd(product.id, valueIds, true)}>
           <AddCircleOutlineOutlinedIcon />
         </IconButton>
       </Stack>
@@ -89,7 +103,11 @@ export const ProductCard = ({
           )}
         </Box>
         <Typography>{product.name}</Typography>
-        <Typography>{formatPrice(product.price)}</Typography>
+        <Typography>
+          {isSimple
+            ? formatCents(defaultValue?.price_cents)
+            : `Mulai ${formatCents(getStartingPrice(product))}`}
+        </Typography>
         {renderButton()}
       </Stack>
     </Card>

@@ -39,7 +39,7 @@ export const useBpspParam = create<BpspState>((set) => ({
       if (res.status === 200 && res.data) {
         set({
           count: res.data.count || 0,
-          bpsps: res.data.data.map((dt) => bpspListingSchema.parse(dt)),
+          bpsps: (res.data.data ?? []).map((dt) => bpspListingSchema.parse(dt)),
         })
       }
     } catch {

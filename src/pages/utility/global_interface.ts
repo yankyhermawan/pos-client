@@ -21,7 +21,8 @@ export type DefaultPaginationQuery = {
 
 export type PaginationResponse<T extends object> = {
   count: number
-  data: T
+  // the API omits data when there are no rows
+  data?: T
 }
 
 export type TableRowActionType = 'edit' | 'delete' | 'view'

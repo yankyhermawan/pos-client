@@ -1,5 +1,5 @@
 import { Modal } from '../../components/modal/Modal'
-import type { Product } from '../../product/interface'
+import type { ProductListing } from '../../product/interface'
 import { getFullUrl } from '../../utility/get_full_url'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules'
@@ -12,14 +12,17 @@ import 'swiper/css/scrollbar'
 
 type ProductDetailProps = {
   handleClose: () => void
-  product: Product | undefined
+  product: ProductListing | undefined
 }
 
 export const ProductDetail = ({ handleClose, product }: ProductDetailProps) => {
   const renderImages = () => {
     if (!product) return null
     return product?.product_images.map((image) => (
-      <SwiperSlide style={{ display: 'flex', justifyContent: 'center' }}>
+      <SwiperSlide
+        key={image.id}
+        style={{ display: 'flex', justifyContent: 'center' }}
+      >
         <Box
           sx={{
             aspectRatio: '1 / 1',

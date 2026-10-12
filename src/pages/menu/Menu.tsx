@@ -3,6 +3,7 @@ import qs from 'qs'
 import { QS_DEFAULT_PARSE } from '../common/constant'
 import { useEffect, useState } from 'react'
 import { useProductStore } from '../product/store'
+import { useCategoryStore } from '../category/store'
 import {
   Badge,
   Box,
@@ -16,44 +17,73 @@ import type { Cart, StoreCart } from './interface'
 import { getLocalStorage, setLocalStorage } from '../utility/local_storage'
 import { useEffectSkipFirst } from '../utility/custom_hooks'
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined'
-import type { Product } from '../product/interface'
+import type { ProductListing } from '../product/interface'
 import { ProductDetail } from './components/ProductDetail'
+import { ProductOptions } from './components/ProductOptions'
+import { ALL_CATEGORY_ID, CategoryTabs } from './components/CategoryTabs'
 
 type MenuParams = {
   storeId: string
 }
+
+const isSameLine = (line: Cart, productId: number, valueIds: number[]) =>
+  line.product_id === productId &&
+  line.value_ids.length === valueIds.length &&
+  line.value_ids.every((id) => valueIds.includes(id))
+
+const getStoreCart = (storeId: string) =>
+  (getLocalStorage<StoreCart[]>('cart') || [])
+    .find((dt) => dt.store_id === Number(storeId))
+    ?.cart.filter((line) => Array.isArray(line.value_ids)) || []
 
 const Menu = () => {
   const location = useLocation()
   const { storeId } = qs.parse(location.search, QS_DEFAULT_PARSE) as MenuParams
   const navigate = useNavigate()
   const { getProducts, products = [] } = useProductStore()
-  const storage =
-    (getLocalStorage<StoreCart[]>('cart') || []).find(
-      (dt) => dt.store_id === Number(storeId),
-    )?.cart || []
-  const [cart, setCart] = useState<Cart[]>(storage)
-  const [selectedProduct, setSelectedProduct] = useState<Product | undefined>()
+  const { categories, getCategories } = useCategoryStore()
+  const [selection, setSelection] = useState({
+    categoryId: ALL_CATEGORY_ID,
+    storeId,
+  })
+  // a selection only counts for the store it was made in
+  const categoryId =
+    selection.storeId === storeId ? selection.categoryId : ALL_CATEGORY_ID
+  const [cart, setCart] = useState<Cart[]>(() => getStoreCart(storeId))
+  const [selectedProduct, setSelectedProduct] = useState<
+    ProductListing | undefined
+  >()
+  const [optionsProduct, setOptionsProduct] = useState<
+    ProductListing | undefined
+  >()
   const totalItems = cart.reduce((sum, n) => sum + n.qty, 0)
 
-  const handleClickAddSub = (product_id: number, isAdd: boolean) => {
-    const copied = [...cart]
-    const selected = copied.find((dt) => dt.product_id === product_id)
+  const handleClickAddSub = (
+    product_id: number,
+    value_ids: number[],
+    isAdd: boolean,
+  ) => {
+    const selected = cart.find((dt) => isSameLine(dt, product_id, value_ids))
     const selectedQty = Math.max(selected?.qty || 0, 0)
     const newQty = isAdd ? selectedQty + 1 : selectedQty - 1
-    const notSelected = copied.filter((dt) => dt.product_id !== product_id)
-    if (newQty > 0) {
-      setCart([...notSelected, { product_id, qty: newQty }])
-    } else {
-      setCart(notSelected)
+    if (newQty <= 0) {
+      setCart(cart.filter((dt) => !isSameLine(dt, product_id, value_ids)))
+      return
     }
+    if (selected) {
+      setCart(
+        cart.map((dt) =>
+          isSameLine(dt, product_id, value_ids) ? { ...dt, qty: newQty } : dt,
+        ),
+      )
+      return
+    }
+    setCart([...cart, { product_id, qty: newQty, value_ids }])
   }
 
   useEffect(() => {
     const listener = () => {
-      const storageCart = getLocalStorage<StoreCart[]>('cart') || []
-      const filtered = storageCart.find((dt) => dt.store_id === Number(storeId))
-      setCart(filtered?.cart || [])
+      setCart(getStoreCart(storeId))
     }
 
     window.addEventListener('storage', listener)
@@ -78,11 +108,18 @@ const Menu = () => {
 
   useEffect(() => {
     const numbered = Number(storeId)
+    if (!numbered) return
+    getCategories(true)(numbered)
+  }, [storeId])
+
+  useEffect(() => {
+    const numbered = Number(storeId)
     if (!numbered) {
       navigate('/404')
       return
     }
     getProducts(true)({
+      ...(categoryId !== ALL_CATEGORY_ID ? { category_id: categoryId } : {}),
       store_id: numbered,
       limit: 0,
       offset: 0,
@@ -93,7 +130,7 @@ const Menu = () => {
         },
       ],
     })
-  }, [storeId, navigate])
+  }, [storeId, categoryId, navigate])
 
   return (
     <>
@@ -101,12 +138,23 @@ const Menu = () => {
         handleClose={() => setSelectedProduct(undefined)}
         product={selectedProduct}
       />
+      {optionsProduct && (
+        <ProductOptions
+          key={optionsProduct.id}
+          lines={cart.filter((dt) => dt.product_id === optionsProduct.id)}
+          onChange={(valueIds, isAdd) =>
+            handleClickAddSub(optionsProduct.id, valueIds, isAdd)
+          }
+          onClose={() => setOptionsProduct(undefined)}
+          product={optionsProduct}
+        />
+      )}
       <Container
         sx={{
           backgroundColor: 'background.default',
           display: 'flex',
+          flexDirection: 'column',
           minHeight: '100dvh',
-          justifyContent: 'center',
           minWidth: '320px',
           '&.MuiContainer-maxWidthLg': {
             '@media (min-width: 1200px)': {
@@ -115,6 +163,13 @@ const Menu = () => {
           },
         }}
       >
+        {categories.length > 0 && (
+          <CategoryTabs
+            categories={categories}
+            onChange={(id) => setSelection({ categoryId: id, storeId })}
+            value={categoryId}
+          />
+        )}
         <Stack
           direction='row'
           sx={{
@@ -137,9 +192,10 @@ const Menu = () => {
               }}
             >
               <ProductCard
-                cart={cart.find((dt) => dt.product_id === product.id)}
+                lines={cart.filter((dt) => dt.product_id === product.id)}
                 onClickAdd={handleClickAddSub}
                 onClickDetail={() => setSelectedProduct(product)}
+                onClickOptions={() => setOptionsProduct(product)}
                 product={product}
               />
             </Container>

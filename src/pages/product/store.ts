@@ -3,10 +3,13 @@ import {
   productDetailSchema,
   productListingSchema,
   type GetProductParams,
-  type ProductForm,
+  type ProductRequest,
   type ProductState,
 } from './interface'
 import * as action from './action'
+
+// only the latest list request may write to the store
+let latestListRequest = 0
 
 export const useProductStore = create<ProductState>((set) => ({
   count: 0,
@@ -17,7 +20,7 @@ export const useProductStore = create<ProductState>((set) => ({
   product: undefined,
   products: [],
 
-  createProduct: async (body: ProductForm) => {
+  createProduct: async (body: ProductRequest) => {
     set({ isActionLoading: true, isActionSuccess: false, isError: false })
     try {
       const res = await action.createProduct(body)
@@ -48,15 +51,19 @@ export const useProductStore = create<ProductState>((set) => ({
   },
 
   getProducts: (isPublic: boolean) => async (params: GetProductParams) => {
+    const requestId = ++latestListRequest
     set({ isLoading: true, isError: false })
     try {
       const res = isPublic
         ? await action.getPublicProducts(params)
         : await action.getProducts(params)
+      if (requestId !== latestListRequest) return
       if (res.status === 200 && res.data) {
         set({
           count: res.data?.count || 0,
-          products: res.data?.data.map((dt) => productListingSchema.parse(dt)),
+          products: (res.data.data ?? []).map((dt) =>
+            productListingSchema.parse(dt),
+          ),
         })
       } else {
         set({
@@ -71,7 +78,7 @@ export const useProductStore = create<ProductState>((set) => ({
     }
   },
 
-  updateProduct: async (body: ProductForm) => {
+  updateProduct: async (body: ProductRequest) => {
     set({ isActionLoading: true, isActionSuccess: false, isError: false })
     try {
       const res = await action.updateProduct(body)

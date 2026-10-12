@@ -8,6 +8,7 @@ type FormUploadProps = BaseFormInput & {
   multiple?: boolean
   onChange: (e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>) => void
   onDelete: (key: string) => void
+  onReorder?: (from: number, to: number) => void
 }
 
 const FormUpload = ({
@@ -19,6 +20,7 @@ const FormUpload = ({
   multiple,
   onChange,
   onDelete,
+  onReorder,
 }: FormUploadProps) => {
   const { control } = useFormContext()
 
@@ -35,6 +37,7 @@ const FormUpload = ({
           multiple={multiple}
           onChange={onChange}
           onDelete={onDelete}
+          onReorder={onReorder}
         />
       )}
     />
